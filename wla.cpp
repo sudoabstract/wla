@@ -1,8 +1,10 @@
 #include <iostream>
 #include <set>
 #include <string>
+#include <algorithm>
 
-template <typename T> class program_point{
+template <typename T> 
+class program_point {
 public :
      class program_point **prev;
      class program_point **next;
@@ -22,8 +24,8 @@ public :
      virtual void transfer_fun_exit();
 };
 
-class reaching_def: public program_point
-{
+template <typename T> 
+class reaching_def: public program_point<T> {
 public:
      void gen_set()
 	  {
@@ -34,12 +36,12 @@ public:
      void transfer_fun_entry()
 	  {
 	       std::set<T> temp;
-	       for(int i = 0; i < prev_count; i++)
+	       for(int i = 0; i < this->prev_count; i++)
 	       {
-		    if(prev[i] != NULL)
+		    if(this->prev[i] != NULL)
 		    {
-			 std::set_union((prev[i]->set_exit).begin(), (prev[i]->set_exit).end(), set_entry.begin(), set_entry.end(), temp.begin());
-			 set_entry = temp;
+			 std::set_union((this->prev[i]->set_exit).begin(), (this->prev[i]->set_exit).end(), this->set_entry.begin(), this->set_entry.end(), temp.begin());
+			 this->set_entry = temp;
 			 temp = std::set<T>();
 		    }
 	       }
@@ -48,14 +50,14 @@ public:
 	  {
 	       std::set<T> temp;
 	       
-	       std::set_difference((set_entry).begin(), (set_entry).end(), (set_kill).begin(), (set_kill).end(), (temp).begin());
+	       std::set_difference((this->set_entry).begin(), (this->set_entry).end(), (this->set_kill).begin(), (this->set_kill).end(), (temp).begin());
 	       
-	       std::set_union((temp).begin(), (temp).end(), (set_gen).begin(), (set_gen).end(), (set_exit).begin());
+	       std::set_union((temp).begin(), (temp).end(), (this->set_gen).begin(), (this->set_gen).end(), (this->set_exit).begin());
 	  }
 };
 
-class available_exp : Public program_point
-{
+template <typename T> 
+class available_exp : public program_point<T>{
 public:
      void gen_set()
 	  {
@@ -66,18 +68,16 @@ public:
      void transfer_fun_entry()
 	  {
 	       std::set<T> temp;
-	       for(int i = 0; i < prev_count; i++)
+	       for(int i = 0; i < this->prev_count; i++)
 	       {
-
-
-		    if(prev[i] != NULL)
+		    if(this->prev[i] != NULL)
 		    {
 
 			 if(i == 0){
-			      temp = (prev[i]->set_exit);
+			      temp = (this->prev[i]->set_exit);
 			 }
-			 std::set_intersection((prev[i]->set_exit).begin(), (prev[i]->set_exit).end(), set_entry.begin(), set_entry.end(), temp.begin());
-			 set_entry = temp;
+			 std::set_intersection((this->prev[i]->set_exit).begin(), (this->prev[i]->set_exit).end(), this->set_entry.begin(), this->set_entry.end(), temp.begin());
+			 this->set_entry = temp;
 			 temp = std::set<T>();
 		    }
 	       }
@@ -86,14 +86,14 @@ public:
 	  {
 	       std::set<T> temp;
 	       
-	       std::set_difference((set_entry).begin(), (set_entry).end(), (set_kill).begin(), (set_kill).end(), (temp).begin());
+	       std::set_difference((this->set_entry).begin(), (this->set_entry).end(), (this->set_kill).begin(), (this->set_kill).end(), (temp).begin());
 	       
-	       std::set_union((temp).begin(), (temp).end(), (set_gen).begin(), (set_gen).end(), (set_exit).begin());
+	       std::set_union((temp).begin(), (temp).end(), (this->set_gen).begin(), (this->set_gen).end(), (this->set_exit).begin());
 	  }
 };
 
-class live_var : Public program_point
-{
+template <typename T> 
+class live_var : public program_point<T>{
 public:
      void gen_set()
 	  {
@@ -104,22 +104,22 @@ public:
      void transfer_fun_entry()
 	  {
 	       std::set<T> temp;
-	       std::set_difference((set_exit).begin(), (set_exit).end(), (set_kill).begin(), (set_kill).end(), (temp).begin());
+	       std::set_difference((this->set_exit).begin(), (this->set_exit).end(), (this->set_kill).begin(), (this->set_kill).end(), (temp).begin());
 	       
-	       std::set_union((temp).begin(), (temp).end(), (set_gen).begin(), (set_gen).end(), (set_entry).begin());
+	       std::set_union((temp).begin(), (temp).end(), (this->set_gen).begin(), (this->set_gen).end(), (this->set_entry).begin());
 	  }
      void transfer_fun_exit()
 	  {
 	       std::set<T> temp;
-	       for(int i = 0; i < next_count; i++)
+	       for(int i = 0; i < this->next_count; i++)
 	       {
-		    if(next[i] != NULL)
+		    if(this->next[i] != NULL)
 		    {
 			 if(i == 0){
-			      temp = (next[i]->set_entry);
+			      temp = (this->next[i]->set_entry);
 			 }
-			 std::set_union((next[i]->set_entry).begin(), (prev[i]->set_entry).end(), set_exit.begin(), set_exit.end(), temp.begin());
-			 set_exit = temp;
+			 std::set_union((this->next[i]->set_entry).begin(), (this->prev[i]->set_entry).end(), this->set_exit.begin(), this->set_exit.end(), temp.begin());
+			 this->set_exit = temp;
 			 temp = std::set<T>();
 		    }
 	       }
@@ -127,8 +127,8 @@ public:
 };
 
 
-class very_busy_exp : Public program_point
-{
+template <typename T> 
+class very_busy_exp : public program_point<T>{
 public:
      void gen_set()
 	  {
@@ -139,22 +139,22 @@ public:
      void transfer_fun_entry()
 	  {
 	       std::set<T> temp;
-	       std::set_difference((set_exit).begin(), (set_exit).end(), (set_kill).begin(), (set_kill).end(), (temp).begin());
+	       std::set_difference((this->set_exit).begin(), (this->set_exit).end(), (this->set_kill).begin(), (this->set_kill).end(), (temp).begin());
 	       
-	       std::set_union((temp).begin(), (temp).end(), (set_gen).begin(), (set_gen).end(), (set_entry).begin());
+	       std::set_union((temp).begin(), (temp).end(), (this->set_gen).begin(), (this->set_gen).end(), (this->set_entry).begin());
 	  }
      void transfer_fun_exit()
 	  {
 	       std::set<T> temp;
-	       for(int i = 0; i < next_count; i++)
+	       for(int i = 0; i < this->next_count; i++)
 	       {
-		    if(next[i] != NULL)
+		    if(this->next[i] != NULL)
 		    {
 			 if(i == 0){
-			      temp = (next[i]->set_entry);
+			      temp = (this->next[i]->set_entry);
 			 }
-			 std::set_intersection((next[i]->set_entry).begin(), (prev[i]->set_entry).end(), set_exit.begin(), set_exit.end(), temp.begin());
-			 set_exit = temp;
+			 std::set_intersection((this->next[i]->set_entry).begin(), (this->prev[i]->set_entry).end(), this->set_exit.begin(), this->set_exit.end(), temp.begin());
+			 this->set_exit = temp;
 			 temp = std::set<T>();
 		    }
 	       }

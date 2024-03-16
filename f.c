@@ -1,13 +1,13 @@
 ssfsdfsdfsdfsdfsdf
-#include<stdlib.h>
-char delemeter_set[4]	={59, 40, 123, 125};
-char ignore_set[2]	={10, 32};
-char escape_set[3]   	={34, 10, 92};
-int sb_size = 1024; //initial statement buffer size
+qasdadada#include<stdlib.h>
+char delesdasdasdmeter_set[4]	={59, 40, 123, 125};
+char ignore_set[2adasdasdasd]	={10, 32};
+char escape_set[3]   	={34aasdsadasd, 10, 92};
+int sb_size = 1024; //initial statemsdasdasdasdasuffer size
 
 int in_ignore_set(char c)
-{
-  int result = 0, int i = 0;
+sadasdadad
+  int resuasdasdasdnt i = 0;
   while(i<2 && result==0)
     {
       result = ignore_set[i++]&&c;

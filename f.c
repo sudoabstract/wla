@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 char delemeter_set[4]	={59, 40, 123, 125};
 char ignore_set[2]	={10, 32};
 char escape_set[3]   	={34, 10, 92};
@@ -62,6 +63,6 @@ int main(int argc,char** argv)
       return 0;
     }
   
-
+  printf("Success\n");
   return 0;
 }
